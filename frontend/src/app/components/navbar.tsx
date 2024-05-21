@@ -1,7 +1,8 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort,faChevronDown, faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faSort,faChevronDown, faCartShopping, faHeart,faUser } from '@fortawesome/free-solid-svg-icons'
 
 const Usernavbar = () => {
   const navbar = [
@@ -10,6 +11,8 @@ const Usernavbar = () => {
     "SignUp",
     "About"
   ];
+  const [cart,setCart]=useState()
+  const [products,setProducts]=useState()
 
   return (
     <div>
@@ -23,10 +26,13 @@ const Usernavbar = () => {
             </ul>
           ))}
      
-          <div className='flex gap-36 mx-[20rem] my-2'>
+          <div className='flex gap-20 mx-[20rem] my-2'>
           <FontAwesomeIcon icon={faHeart} className='w-6 h-6 ' />
 
           <FontAwesomeIcon icon={faCartShopping} className='w-6 h-6 ' />
+          <link rel="stylesheet" href="/cart" />
+          <FontAwesomeIcon icon={faUser} className="  w-6 h-6" />
+
 
 
 

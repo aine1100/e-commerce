@@ -1,13 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCar,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
+  faHeadphones,
   faHeart,
+  faShield,
 } from "@fortawesome/free-solid-svg-icons";
 import Usernavbar from "../components/navbar";
+import UserFooter from "../components/footer";
 
 const Userlanding = () => {
   const [Userimages, setUserImages] = useState([]);
@@ -86,9 +91,24 @@ const Userlanding = () => {
     setNumProducts((prevNum) => prevNum + 6);
   };
 
+  const handleAddToCart = async (product) => {
+    try {
+      await axios.post("http://localhost:5000/AddProduct", {
+        title: product.title,
+        thumbnail: product.thumbnail,
+        price: product.price,
+        rating: product.rating,
+      });
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      alert("Failed to add product to cart.");
+    }
+  };
+
   return (
     <div>
-      <div className="bg-black w-[100%] text-white flex ">
+      <div className="bg-black w-[100%] text-white flex fixed top-0 z-10 ">
         <p className="text-[10px] mx-52 pt-4">
           Enjoy your 20% sales of discount through working with us everyday and
           also enjoy getting our products at low price
@@ -100,7 +120,7 @@ const Userlanding = () => {
           <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 -mx-36" />
         </div>
       </div>
-      <div className="mx-28 my-10 border-b border-black ">
+      <div className="mx-28 my-20 border-b border-black ">
         <Usernavbar />
       </div>
       <div className="mx-28 flex gap-36">
@@ -193,19 +213,25 @@ const Userlanding = () => {
                 Rating: {product.rating}
               </p>
               <div className="flex gap-36">
-                <button className="bg-black text-white p-2 text-sm rounded-sm ">
+                <button
+                  className="bg-black text-white p-2 text-sm rounded-sm"
+                  onClick={() => handleAddToCart(product)}
+                >
                   Add to cart
                 </button>
                 <FontAwesomeIcon
                   icon={faHeart}
-                  className="my-3 text-red-500 "
+                  className="my-3 text-red-500"
                 />
               </div>
             </div>
           ))}
         </div>
         <div className="flex text-center mx-96 mt-4">
-          <button className="bg-red-600 text-white p-3 rounded-sm">
+          <button
+            className="bg-red-600 text-white p-3 rounded-sm"
+            onClick={handleLoadMore}
+          >
             Load more products
           </button>
         </div>
@@ -216,34 +242,32 @@ const Userlanding = () => {
         </h4>
         <h3 className="font-bold text-black my-3 pb-3">Browse by category</h3>
         <div className="flex gap-10 my-3 ">
-        <div className="border-1 border-slate-500 w-[200px] h-[150px] rounded-md text-center  transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white hover:border-red-600">
+          <div className="border-1 border-slate-500 w-[200px] h-[150px] rounded-md text-center  transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white hover:border-red-600">
             <p className="my-28">Phone</p>
           </div>
           <div className="border-1 border-slate-500 w-[200px] h-[150px] rounded-md text-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white hover:border-red-600">
-          <p className="my-28">Computer</p>
-
+            <p className="my-28">Computer</p>
           </div>
           <div className="border-1 border-red-600 bg-red-600 w-[220px] h-[170px] -my-2 rounded-md text-center">
-          <p className="my-28 text-white">Gaming</p>
-
+            <p className="my-28 text-white">Gaming</p>
           </div>
           <div className="border-1 border-slate-500 w-[200px] h-[150px] rounded-md text-center  transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white hover:border-red-600">
-          <p className="my-28">Camera</p>
-
+            <p className="my-28">Camera</p>
           </div>
           <div className="border-1 border-slate-500 w-[200px] h-[150px] rounded-md  transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-red-600 hover:text-white hover:border-red-600">
-          <p className="text-center my-28">SmartWatch</p>
-
+            <p className="text-center my-28">SmartWatch</p>
           </div>
         </div>
       </div>
       <div className="mx-28 my-10 pt-3">
-      <h4 className="text-red-600 border-l-8 pl-2 border-red-600 text-[20px]">
+        <h4 className="text-red-600 border-l-8 pl-2 border-red-600 text-[20px]">
           This month
         </h4>
-        <div className="flex gap-[48rem]" >
-        <h3 className="font-bold text-black my-3">Best selling</h3>
-        <button className="bg-red-600 rounded-sm w-26 h-11 pl-5 pr-5 text-white text-[12px]">View more</button>
+        <div className="flex gap-[48rem]">
+          <h3 className="font-bold text-black my-3">Best selling</h3>
+          <button className="bg-red-600 rounded-sm w-26 h-11 pl-5 pr-5 text-white text-[12px]">
+            View more
+          </button>
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
           {filteredImages.map((product, index) => (
@@ -261,24 +285,135 @@ const Userlanding = () => {
                 Rating: {product.rating}
               </p>
               <div className="flex gap-36">
-                <button className="bg-black text-white p-2 text-sm rounded-sm ">
+                <button
+                  className="bg-black text-white p-2 text-sm rounded-sm"
+                  onClick={() => handleAddToCart(product)}
+                >
                   Add to cart
                 </button>
                 <FontAwesomeIcon
                   icon={faHeart}
-                  className="my-3 text-red-500 "
+                  className="my-3 text-red-500"
                 />
               </div>
             </div>
           ))}
         </div>
       </div>
-     <div>
-      
-     </div>
-<div>
-  hello
-</div>
+      <div className="bg-black w-[1050px] h-[400px] mx-28 rounded-md my-32">
+        <div className="flex gap-6">
+          <div className="mx-28 py-20">
+            <p className="text-blue-400 font-semibold text-[20px]">Category</p>
+            <h2 className="text-white font-medium text-[30px]">
+              Enhance you <br />
+              Tech Knowledge
+            </h2>
+            <ul className="flex gap-10 text-black font-semibold py-8 -mx-5">
+              <li className="bg-white pt-2 w-10 h-10 rounded-[50%] text-center">
+                {countDays}
+                <br />
+                <span className="text-white text-[10px]">Days</span>
+              </li>
+              <li className="bg-white pt-2 w-10 h-10 rounded-[50%] text-center">
+                {countHours}
+                <br />
+                <span className="text-white text-[10px]">Hours</span>
+              </li>
+              <li className="bg-white pt-2 w-10 h-10 rounded-[50%] text-center">
+                {countMinutes}
+                <br />
+                <span className="text-white text-[10px]">Minutes</span>
+              </li>
+              <li className="bg-white pt-2 w-10 h-10 rounded-[50%] text-center">
+                {countSeconds}
+                <br />
+                <span className="text-white text-[10px]">Seconds</span>
+              </li>
+            </ul>
+            <button className="bg-blue-500 py-3 px-5 -my-10 text-white rounded-sm">
+              Buy Now
+            </button>
+          </div>
+          <img
+            src="../images (5).jpg"
+            className="w-[500px] h-[300px] my-10 mx-32"
+          ></img>
+        </div>
+      </div>
+      <div className="mx-28 my-10">
+      <h4 className="text-red-600 border-l-8 pl-2 border-red-600 text-[20px]">
+        New Products
+        </h4>
+        <div className="flex gap-[48rem]">
+          <h3 className="font-bold text-black my-3">Explore new products</h3>
+         </div>
+         <div className="grid grid-cols-3 gap-4 mt-4">
+          {filteredImages.map((product, index) => (
+            <div key={index} className="border p-4 rounded">
+              <img
+                src={product.thumbnail}
+                alt={product.title}
+                className="w-full h-40 object-cover rounded"
+              />
+              <h3 className="text-lg font-bold mt-2">{product.title}</h3>
+              <p className="text-sm font-semibold text-gray-700">
+                ${product.price}
+              </p>
+              <p className="text-xs text-yellow-400">
+                Rating: {product.rating}
+              </p>
+              <div className="flex gap-36">
+                <button
+                  className="bg-black text-white p-2 text-sm rounded-sm"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to cart
+                </button>
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="my-3 text-red-500"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex text-center mx-96 mt-4">
+          <button
+            className="bg-red-600 text-white p-3 rounded-sm"
+            onClick={handleLoadMore}
+          >
+           View more Products
+          </button>
+        </div>
+  
+      </div>
+      <div className="mx-28 my-36">
+        <div className="text-center ">
+          <FontAwesomeIcon icon={faCar} className="w-12 h-12 "/>
+          <FontAwesomeIcon icon={faShield} className="w-12 h-12 mx-36 "/>
+          <FontAwesomeIcon icon={faHeadphones} className="w-12 h-12 "/>
+
+
+
+        </div>
+        <div>
+          <ul className="flex text-[15px] font-semibold text-black gap-10 mx-52 my-10">
+            <li>Free and Fast delivery</li>
+            <li>24/7 customer care</li>
+            <li>Money Transaction security</li>
+          </ul>
+          <ul className="flex text-[12px] font-medium text-black gap-10 mx-52 -my-2">
+            <li>Bring your products at time</li>
+            <li>Bring your products at time</li>
+            <li>Bring your products at time</li>
+          </ul>
+        </div>
+
+      </div>
+      <div>
+        <UserFooter/>
+        
+      </div>
     </div>
   );
 };

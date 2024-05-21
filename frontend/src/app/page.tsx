@@ -1,3 +1,4 @@
+import CartPage from "./pages/cart";
 import Userlanding from "./pages/landing";
 
 export default function Home() {
@@ -5,6 +6,7 @@ export default function Home() {
    <>
    <div>
     <Userlanding/>
+    {/* <CartPage/> */}
    </div>
    </>
   );
