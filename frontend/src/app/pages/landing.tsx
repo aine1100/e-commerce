@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +11,9 @@ import {
   faHeadphones,
   faHeart,
   faShield,
+  faCartShopping,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
-import Usernavbar from "../components/navbar";
 import UserFooter from "../components/footer";
 
 const Userlanding = () => {
@@ -24,7 +26,12 @@ const Userlanding = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredImages, setFilteredImages] = useState([]);
   const [numProducts, setNumProducts] = useState(10); // Number of products to load initially
-
+  const[ProductsImage,setProductsImage]=useState([])
+  const[NewProducts,setNewProducts]=useState([])
+  const[allProducts,setAllProducts]=useState([])
+  const navbar = ["Home", "Contact", "SignUp", "About"];
+  const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     const interval = setInterval(() => {
       setCountSeconds((prev) => {
@@ -71,11 +78,33 @@ const Userlanding = () => {
     fetch("https://dummyjson.com/products?limit=100&skip=2")
       .then((response) => response.json())
       .then((data) => {
-        setUserImages(data.products); // Assuming the products are in an array called 'products'
-        setFilteredImages(data.products.slice(0, 6)); // Initially, show all products
+        setUserImages(data.products);
+        setFilteredImages(data.products.slice(0, 6)); 
       })
       .catch((error) => console.error("Error fetching images:", error));
   }, []);
+  useEffect(()=>{
+    fetch("https://dummyjson.com/products?limit=100&skip=2")
+      .then((response) => response.json())
+      .then((data) => {
+        setAllProducts(data.products)
+        setUserImages(data.products);
+        setProductsImage(data.products.slice(7, 13)); 
+      })
+      .catch((error) => console.error("Error fetching images:", error));
+  })
+
+  useEffect(()=>{
+  fetch("https://dummyjson.com/products?limit=100&skip=2")
+  .then((response =>response.json()))
+  .then((data)=>{
+    setUserImages(data.products)
+    setNewProducts(data.products.slice(14,20))
+  })
+  .catch((err)=>{
+    console.error("error in fectching the images",err)
+  })
+  },[])
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -85,11 +114,16 @@ const Userlanding = () => {
     );
     setFilteredImages(filtered);
   };
-
   const handleLoadMore = () => {
-    // Increase the number of products to load
-    setNumProducts((prevNum) => prevNum + 6);
+    const newNumProducts = numProducts + 10;
+    setNumProducts(newNumProducts);
+    setFilteredImages(allProducts.slice(0, newNumProducts));
   };
+  const handleLoadLess=()=>{
+    const newproducts=numProducts-10;
+    setNumProducts(newproducts)
+    setFilteredImages(allProducts.slice(0,newproducts))
+  }
 
   const handleAddToCart = async (product) => {
     try {
@@ -121,7 +155,25 @@ const Userlanding = () => {
         </div>
       </div>
       <div className="mx-28 my-20 border-b border-black ">
-        <Usernavbar />
+      <div className="flex">
+        <h1 className="text-blue-400 font-bold text-[30px]">Ace</h1>
+        <ul className="flex gap-10 mx-2">
+          {navbar.map((item, index) => (
+            <li key={index} className="text-[16px] hover:text-blue-400 font-semibold my-2">
+              <Link href={`/${item.toLowerCase()}`}>{item}</Link>
+            </li>
+          ))}
+        </ul>
+        <div className="flex gap-20 mx-96 my-2">
+          <Link href="/">
+            <FontAwesomeIcon icon={faHeart} className="w-6 h-6" />
+          </Link>
+          <Link href="/cart" className="text-black">
+            <FontAwesomeIcon icon={faCartShopping} className="w-6 h-6" />
+          </Link>
+          <FontAwesomeIcon icon={faUser} className="w-6 h-6" />
+        </div>
+      </div>
       </div>
       <div className="mx-28 flex gap-36">
         <ul className="text-[15px] gap-5 border-black border-r-2">
@@ -227,12 +279,18 @@ const Userlanding = () => {
             </div>
           ))}
         </div>
-        <div className="flex text-center mx-96 mt-4">
+        <div className="flex text-center mx-96 mt-4 gap-28 w-[40rem]">
           <button
             className="bg-red-600 text-white p-3 rounded-sm"
             onClick={handleLoadMore}
           >
             Load more products
+          </button>
+          <button
+            className="bg-red-600 text-white p-3 rounded-sm"
+            onClick={handleLoadLess}
+          >
+            Load Less products
           </button>
         </div>
       </div>
@@ -270,7 +328,7 @@ const Userlanding = () => {
           </button>
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {filteredImages.map((product, index) => (
+          {ProductsImage.map((product, index) => (
             <div key={index} className="border p-4 rounded">
               <img
                 src={product.thumbnail}
@@ -348,7 +406,7 @@ const Userlanding = () => {
           <h3 className="font-bold text-black my-3">Explore new products</h3>
          </div>
          <div className="grid grid-cols-3 gap-4 mt-4">
-          {filteredImages.map((product, index) => (
+          {NewProducts.map((product, index) => (
             <div key={index} className="border p-4 rounded">
               <img
                 src={product.thumbnail}

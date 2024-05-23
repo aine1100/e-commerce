@@ -6,7 +6,7 @@ export default function Home() {
    <>
    <div>
     <Userlanding/>
-    {/* <CartPage/> */}
+    <CartPage/>
    </div>
    </>
   );
