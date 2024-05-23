@@ -12,7 +12,7 @@ import {
   faHeart,
   faShield,
   faCartShopping,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import UserFooter from "../components/footer";
 
@@ -26,12 +26,39 @@ const Userlanding = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredImages, setFilteredImages] = useState([]);
   const [numProducts, setNumProducts] = useState(10); // Number of products to load initially
-  const[ProductsImage,setProductsImage]=useState([])
-  const[NewProducts,setNewProducts]=useState([])
-  const[allProducts,setAllProducts]=useState([])
+  const [ProductsImage, setProductsImage] = useState([]);
+  const [NewProducts, setNewProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const navbar = ["Home", "Contact", "SignUp", "About"];
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/cart", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCartItems(data);
+        console.log("Data fetched successfully", data);
+      } else {
+        console.error("Error fetching cart items:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCountSeconds((prev) => {
@@ -79,32 +106,32 @@ const Userlanding = () => {
       .then((response) => response.json())
       .then((data) => {
         setUserImages(data.products);
-        setFilteredImages(data.products.slice(0, 6)); 
+        setFilteredImages(data.products.slice(0, 6));
       })
       .catch((error) => console.error("Error fetching images:", error));
   }, []);
-  useEffect(()=>{
+  useEffect(() => {
     fetch("https://dummyjson.com/products?limit=100&skip=2")
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data.products)
+        setAllProducts(data.products);
         setUserImages(data.products);
-        setProductsImage(data.products.slice(7, 13)); 
+        setProductsImage(data.products.slice(7, 13));
       })
       .catch((error) => console.error("Error fetching images:", error));
-  })
+  });
 
-  useEffect(()=>{
-  fetch("https://dummyjson.com/products?limit=100&skip=2")
-  .then((response =>response.json()))
-  .then((data)=>{
-    setUserImages(data.products)
-    setNewProducts(data.products.slice(14,20))
-  })
-  .catch((err)=>{
-    console.error("error in fectching the images",err)
-  })
-  },[])
+  useEffect(() => {
+    fetch("https://dummyjson.com/products?limit=100&skip=2")
+      .then((response) => response.json())
+      .then((data) => {
+        setUserImages(data.products);
+        setNewProducts(data.products.slice(14, 20));
+      })
+      .catch((err) => {
+        console.error("error in fectching the images", err);
+      });
+  }, []);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -119,11 +146,11 @@ const Userlanding = () => {
     setNumProducts(newNumProducts);
     setFilteredImages(allProducts.slice(0, newNumProducts));
   };
-  const handleLoadLess=()=>{
-    const newproducts=numProducts-10;
-    setNumProducts(newproducts)
-    setFilteredImages(allProducts.slice(0,newproducts))
-  }
+  const handleLoadLess = () => {
+    const newproducts = numProducts - 10;
+    setNumProducts(newproducts);
+    setFilteredImages(allProducts.slice(0, newproducts));
+  };
 
   const handleAddToCart = async (product) => {
     try {
@@ -143,7 +170,7 @@ const Userlanding = () => {
   return (
     <div>
       <div className="bg-black w-[100%] text-white flex fixed top-0 z-10 ">
-        <p className="text-[10px] mx-52 pt-4">
+        <p className="text-[10px] mx-52 pt-4 pb-5">
           Enjoy your 20% sales of discount through working with us everyday and
           also enjoy getting our products at low price
         </p>
@@ -155,25 +182,33 @@ const Userlanding = () => {
         </div>
       </div>
       <div className="mx-28 my-20 border-b border-black ">
-      <div className="flex">
-        <h1 className="text-blue-400 font-bold text-[30px]">Ace</h1>
-        <ul className="flex gap-10 mx-2">
-          {navbar.map((item, index) => (
-            <li key={index} className="text-[16px] hover:text-blue-400 font-semibold my-2">
-              <Link href={`/${item.toLowerCase()}`}>{item}</Link>
-            </li>
-          ))}
-        </ul>
-        <div className="flex gap-20 mx-96 my-2">
-          <Link href="/">
-            <FontAwesomeIcon icon={faHeart} className="w-6 h-6" />
-          </Link>
-          <Link href="/cart" className="text-black">
-            <FontAwesomeIcon icon={faCartShopping} className="w-6 h-6" />
-          </Link>
-          <FontAwesomeIcon icon={faUser} className="w-6 h-6" />
+        <div className="flex">
+          <h1 className="text-blue-400 font-bold text-[30px]">Ace</h1>
+          <ul className="flex gap-10 mx-2">
+            {navbar.map((item, index) => (
+              <li
+                key={index}
+                className="text-[16px] hover:text-blue-400 font-semibold my-2"
+              >
+                <Link href={`/${item.toLowerCase()}`}>{item}</Link>
+              </li>
+            ))}
+          </ul>
+          <div className="flex gap-20 mx-96 my-2">
+            <Link href="/">
+              <FontAwesomeIcon icon={faHeart} className="w-6 h-6" />
+            </Link>
+            <Link href="/cart" className="text-black">
+              <p >
+                <FontAwesomeIcon icon={faCartShopping} className="w-6 h-6" />
+                <span className="absolute -my-10 mx-1 bg-yellow-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItems.length}
+                </span>
+              </p>
+            </Link>
+            <FontAwesomeIcon icon={faUser} className="w-6 h-6" />
+          </div>
         </div>
-      </div>
       </div>
       <div className="mx-28 flex gap-36">
         <ul className="text-[15px] gap-5 border-black border-r-2">
@@ -271,10 +306,7 @@ const Userlanding = () => {
                 >
                   Add to cart
                 </button>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="my-3 text-red-500"
-                />
+                <FontAwesomeIcon icon={faHeart} className="my-3 text-red-500" />
               </div>
             </div>
           ))}
@@ -349,10 +381,7 @@ const Userlanding = () => {
                 >
                   Add to cart
                 </button>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="my-3 text-red-500"
-                />
+                <FontAwesomeIcon icon={faHeart} className="my-3 text-red-500" />
               </div>
             </div>
           ))}
@@ -399,13 +428,13 @@ const Userlanding = () => {
         </div>
       </div>
       <div className="mx-28 my-10">
-      <h4 className="text-red-600 border-l-8 pl-2 border-red-600 text-[20px]">
-        New Products
+        <h4 className="text-red-600 border-l-8 pl-2 border-red-600 text-[20px]">
+          New Products
         </h4>
         <div className="flex gap-[48rem]">
           <h3 className="font-bold text-black my-3">Explore new products</h3>
-         </div>
-         <div className="grid grid-cols-3 gap-4 mt-4">
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-4">
           {NewProducts.map((product, index) => (
             <div key={index} className="border p-4 rounded">
               <img
@@ -427,10 +456,7 @@ const Userlanding = () => {
                 >
                   Add to cart
                 </button>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="my-3 text-red-500"
-                />
+                <FontAwesomeIcon icon={faHeart} className="my-3 text-red-500" />
               </div>
             </div>
           ))}
@@ -440,19 +466,15 @@ const Userlanding = () => {
             className="bg-red-600 text-white p-3 rounded-sm"
             onClick={handleLoadMore}
           >
-           View more Products
+            View more Products
           </button>
         </div>
-  
       </div>
       <div className="mx-28 my-36">
         <div className="text-center ">
-          <FontAwesomeIcon icon={faCar} className="w-12 h-12 "/>
-          <FontAwesomeIcon icon={faShield} className="w-12 h-12 mx-36 "/>
-          <FontAwesomeIcon icon={faHeadphones} className="w-12 h-12 "/>
-
-
-
+          <FontAwesomeIcon icon={faCar} className="w-12 h-12 " />
+          <FontAwesomeIcon icon={faShield} className="w-12 h-12 mx-36 " />
+          <FontAwesomeIcon icon={faHeadphones} className="w-12 h-12 " />
         </div>
         <div>
           <ul className="flex text-[15px] font-semibold text-black gap-10 mx-52 my-10">
@@ -466,11 +488,9 @@ const Userlanding = () => {
             <li>Bring your products at time</li>
           </ul>
         </div>
-
       </div>
       <div>
-        <UserFooter/>
-        
+        <UserFooter />
       </div>
     </div>
   );

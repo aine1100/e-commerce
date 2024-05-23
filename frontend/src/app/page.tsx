@@ -5,7 +5,7 @@ export default function Home() {
   return (
    <>
    <div>
-    <Userlanding/>
+    {/* <Userlanding/> */}
     <CartPage/>
    </div>
    </>

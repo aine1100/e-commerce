@@ -7,6 +7,11 @@ import Link from "next/link";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
+  const navbar=[
+    "home",
+    "about",
+    "login"
+  ]
 
   const fetchCartItems = async () => {
     try {
@@ -52,11 +57,22 @@ const CartPage = () => {
       console.log("Error:", err);
     }
   };
+  const EditProduct=async()=>{
+    const EditedProduct= await fetch("http://localhost:5000/editProducts",{
+      method:"PUT",
+      headers:{
+        "Content-Type":"application/json"
+      }
+
+    }
+    
+  )
+  }
 
   return (
     <>
-      <div>
-        <div className="bg-black w-full text-white flex pb-3">
+      <div className="z-20">
+        <div className="bg-black w-full text-white fixed top-0 flex pb-3">
           <p className="text-xs mx-52 pt-4">
             Enjoy your 20% sales of discount through working with us everyday and
             also enjoy getting our products at low price
@@ -67,8 +83,39 @@ const CartPage = () => {
             <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 -mx-36" />
           </div>
         </div>
-        <div className="mx-28 my-10">
-          <h2 className="text-2xl font-bold mb-5">Your Cart</h2>
+        <div>
+        <div className="mx-28 my-20 border-b bg-blue-400 w-[65rem] px-10 pt-2   rounded-md fixed -top-4">
+        <div className="flex ">
+          <h1 className="text-white font-bold text-[30px] -my-1">Ace</h1>
+          <ul className="flex gap-10 mx-2">
+            {navbar.map((item, index) => (
+              <li
+                key={index}
+                className="text-[16px] hover:text-yellow-400 font-semibold my-2 mx-2 text-white"
+              >
+                <Link href={`/${item.toLowerCase()}`}>{item}</Link>
+              </li>
+            ))}
+          </ul>
+          <div className="flex gap-20 mx-96 my-2">
+            <Link href="/">
+              <FontAwesomeIcon icon={faHeart} className="w-6 h-6 text-white"  />
+            </Link>
+            <Link href="/cart" className="white">
+              <p >
+                <FontAwesomeIcon icon={faCartShopping} className="w-6 h-6 text-white" />
+                <span className="absolute -my-10 mx-1 bg-yellow-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItems.length}
+                </span>
+              </p>
+            </Link>
+            <FontAwesomeIcon icon={faUser} className="w-6 h-6 text-white"  />
+          </div>
+        </div>
+      </div>
+        </div>
+        <div className="mx-28 my-36">
+          <h2 className="text-2xl font-bold mb-5" >Your Cart</h2>
           {cartItems.length === 0 ? (
             <p>Your cart is empty.</p>
           ) : (
