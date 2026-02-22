@@ -67,20 +67,18 @@ app.delete("/deleteProducts", async (req, res) => {
         console.error("Failed to delete product", error);
     }
 });
-app.put("/editProduct",async(req,res)=>{
-    const {id}=req.params;
-    const EditedProduct=req.body
-    try{
-        const EditPr=await Product.findOneAndUpdate(id,EditedProduct)
-        res.status(200).send("the product is edited sucessfuly")
-
-        console.log(EditedProduct)
+app.put("/editProduct/:id", async (req, res) => {
+    const { id } = req.params;
+    const EditedProduct = req.body;
+    try {
+        const EditPr = await Product.findOneAndUpdate({ id }, EditedProduct, { new: true });
+        res.status(200).send("The product is edited successfully");
+        console.log(EditedProduct);
+    } catch (err) {
+        res.status(404).send(err);
+        console.log("The product failed to be edited", err);
     }
-    catch(err){
-        res.status(404).send(err)
-        console.log("the product failed to be edited",err)
-    }
-})
+});
 
 
 app.listen(5000, () => {
